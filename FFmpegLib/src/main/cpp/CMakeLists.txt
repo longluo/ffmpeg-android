@@ -1,79 +1,39 @@
 cmake_minimum_required(VERSION 3.10.2)
 
+project(ffmpeg)
+
 # 支持gnu++11
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
 
 # 1. 定义so库和头文件所在目录，方面后面使用
+set(ffmpeg_header_dir ${CMAKE_SOURCE_DIR})
 set(ffmpeg_lib_dir ${CMAKE_SOURCE_DIR}/../jniLibs/${ANDROID_ABI})
-set(ffmpeg_head_dir ${CMAKE_SOURCE_DIR})
+set(ffmpeg_libs ${ffmpeg_lib_dir})
 
 # 2. 添加头文件目录
-include_directories(${ffmpeg_head_dir}/include)
+include_directories(${ffmpeg_header_dir}/include)
 
 # 3. 添加ffmpeg相关的so库
-add_library(avutil
-        SHARED
-        IMPORTED)
 
-set_target_properties(avutil
-        PROPERTIES IMPORTED_LOCATION
-        ${ffmpeg_lib_dir}/libavutil.so)
+set(
+        # List variable name
+        ffmpeg_libs_names
+        # Values in the list
+        avutil swresample avcodec avfilter avformat swscale avdevice postproc)
 
-add_library(swresample
-        SHARED
-        IMPORTED)
+foreach (ffmpeg_lib_name ${ffmpeg_libs_names})
 
-set_target_properties(swresample
-        PROPERTIES IMPORTED_LOCATION
-        ${ffmpeg_lib_dir}/libswresample.so)
+    add_library(
+            ${ffmpeg_lib_name}
+            SHARED
+            IMPORTED)
 
-add_library(avcodec
-        SHARED
-        IMPORTED)
-
-set_target_properties(avcodec
-        PROPERTIES IMPORTED_LOCATION
-        ${ffmpeg_lib_dir}/libavcodec.so)
-
-add_library(avfilter
-        SHARED
-        IMPORTED)
-
-set_target_properties(avfilter
-        PROPERTIES IMPORTED_LOCATION
-        ${ffmpeg_lib_dir}/libavfilter.so)
-
-add_library(swscale
-        SHARED
-        IMPORTED)
-
-set_target_properties(swscale
-        PROPERTIES IMPORTED_LOCATION
-        ${ffmpeg_lib_dir}/libswscale.so)
-
-add_library(avformat
-        SHARED
-        IMPORTED)
-
-set_target_properties(avformat
-        PROPERTIES IMPORTED_LOCATION
-        ${ffmpeg_lib_dir}/libavformat.so)
-
-add_library(avdevice
-        SHARED
-        IMPORTED)
-
-set_target_properties(avdevice
-        PROPERTIES IMPORTED_LOCATION
-        ${ffmpeg_lib_dir}/libavdevice.so)
-
-add_library(postproc
-        SHARED
-        IMPORTED)
-
-set_target_properties(postproc
-        PROPERTIES IMPORTED_LOCATION
-        ${ffmpeg_lib_dir}/libpostproc.so)
+    set_target_properties(
+            ${ffmpeg_lib_name}
+            PROPERTIES
+            IMPORTED_LOCATION
+            ${ffmpeg_libs}/lib${ffmpeg_lib_name}.so)
+endforeach ()
 
 # 查找代码中使用到的系统库
 find_library( # Sets the name of the path variable.
@@ -100,16 +60,11 @@ target_link_libraries(
         # 指定目标库，native-lib 是在上面 add_library 中配置的目标库
         native-lib
 
-        # 4. 连接 FFmpeg 相关的库
-        avutil
-        swresample
-        avcodec
-        avfilter
-        swscale
-        avformat
-        avdevice
-        postproc
-
         # Links the target library to the log library
         # included in the NDK.
-        ${log-lib})
+        # Library for writing messages in LogCat
+        log
+
+        # 4. 连接 FFmpeg 相关的库
+        # FFmpeg libraries
+        ${ffmpeg_libs_names})
