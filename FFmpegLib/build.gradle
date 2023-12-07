@@ -1,5 +1,5 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
 }
 
 android {
@@ -7,7 +7,6 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "me.longluo.av"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
@@ -40,6 +39,13 @@ android {
         }
     }
 
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -47,9 +53,5 @@ android {
 }
 
 dependencies {
-    implementation project(':FFmpegLib')
 
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'com.google.android.material:material:1.2.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 }
