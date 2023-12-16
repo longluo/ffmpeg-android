@@ -51,8 +51,16 @@ add_library( # Sets the name of the library.
         SHARED
 
         # Provides a relative path to your source file(s).
+        # All cpp files to compile
         native-lib.cpp
-        )
+        main.cpp
+        media_file_builder.cpp
+        media_file_builder_jni.cpp
+        frame_loader_context.cpp
+        frame_loader_context_jni.cpp
+        frame_extractor.cpp
+        utils.cpp)
+
 
 # 指定编译目标库时，cmake要链接的库
 target_link_libraries(
@@ -62,6 +70,10 @@ target_link_libraries(
 
         # Links the target library to the log library
         # included in the NDK.
+
+        # Library for processing Bitmap objects
+        jnigraphics
+
         # Library for writing messages in LogCat
         log
 
