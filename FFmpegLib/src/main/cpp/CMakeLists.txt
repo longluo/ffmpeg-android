@@ -19,7 +19,7 @@ set(
         # List variable name
         ffmpeg_libs_names
         # Values in the list
-        avutil swresample avcodec avfilter avformat swscale avdevice postproc)
+        avutil swresample avcodec avfilter avformat swscale avdevice)
 
 foreach (ffmpeg_lib_name ${ffmpeg_libs_names})
 

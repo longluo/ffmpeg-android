@@ -12,33 +12,34 @@ extern "C" {
 JNIEXPORT jstring JNICALL
 Java_me_longluo_ffmpeg_FFmpegUtils_ffmpegInfo(JNIEnv *env, jobject  /* this */) {
 
-        char info[40000] = {0};
+    char info[40000] = {0};
 
-        AVCodec *c_temp = av_codec_next(NULL);
+    // 初始化编码器遍历器
+    void *opaque = NULL;
+    const AVCodec *c_temp = av_codec_iterate(&opaque);
 
-        while (c_temp != NULL) {
-            if (c_temp->decode != NULL) {
-                sprintf(info, "%sdecode:", info);
-            } else {
-                sprintf(info, "%sencode:", info);
-            }
+    // 遍历所有支持的编码器
+    while (c_temp != NULL) {
 
-            switch (c_temp->type) {
-                case AVMEDIA_TYPE_VIDEO:
-                    sprintf(info, "%s(video):", info);
-                    break;
-                case AVMEDIA_TYPE_AUDIO:
-                    sprintf(info, "%s(audio):", info);
-                    break;
-                default:
-                    sprintf(info, "%s(other):", info);
-                    break;
-            }
+        switch (c_temp->type) {
+            case AVMEDIA_TYPE_VIDEO:
+                sprintf(info, "%s(video):", info);
+                break;
 
-            sprintf(info, "%s[%s]\n", info, c_temp->name);
-            c_temp = c_temp->next;
+            case AVMEDIA_TYPE_AUDIO:
+                sprintf(info, "%s(audio):", info);
+                break;
+
+            default:
+                sprintf(info, "%s(other):", info);
+                break;
         }
 
-        return env->NewStringUTF(info);
+        sprintf(info, "%s[%s]\n", info, c_temp->long_name);
+        c_temp = av_codec_iterate(&opaque);
     }
+
+    return env->NewStringUTF(info);
+}
+
 }
