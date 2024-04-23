@@ -176,6 +176,6 @@ class MediaFileBuilder(private val mediaType: MediaType) {
         System.loadLibrary("avcodec")
         System.loadLibrary("avformat")
         System.loadLibrary("swscale")
-        System.loadLibrary("media-file")
+        System.loadLibrary("native-lib")
     }
 }

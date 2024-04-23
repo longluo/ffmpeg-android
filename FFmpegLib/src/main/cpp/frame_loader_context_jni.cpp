@@ -6,6 +6,7 @@
 // File with JNI bindings for FrameLoader java class.
 
 extern "C" {
+
 JNIEXPORT void JNICALL
 Java_me_longluo_ffmpeg_FrameLoader_nativeRelease(JNIEnv *, jclass,
                                                            jlong jFrameLoaderContextHandle) {
@@ -21,4 +22,5 @@ Java_me_longluo_ffmpeg_FrameLoader_nativeLoadFrame(JNIEnv *env, jclass,
     bool successfullyLoaded = frame_extractor_load_frame(env, jFrameLoaderContextHandle, index, jBitmap);
     return static_cast<jboolean>(successfullyLoaded);
 }
+
 }
