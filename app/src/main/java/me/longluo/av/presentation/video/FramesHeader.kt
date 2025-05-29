@@ -80,6 +80,9 @@ fun FramesHeader(preview: Preview, dstFrameWidth: Int) {
                 )
             }
         }
+        else  -> {
+            // do nothing
+        }
     }
 
 }
